@@ -5,7 +5,12 @@ export const dateTime = (iso) => (iso ? new Date(iso).toLocaleString('pt-BR', {
   day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
 }) : '-');
 
-export const date = (iso) => (iso ? new Date(iso).toLocaleDateString('pt-BR') : '-');
+// Datas sem hora (AAAA-MM-DD) são formatadas sem conversão de fuso, para não voltar um dia.
+export const date = (iso) => {
+  if (!iso) return '-';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso.split('-').reverse().join('/');
+  return new Date(iso).toLocaleDateString('pt-BR');
+};
 
 export const STATUS_LABEL = {
   SCHEDULED: 'Agendada (aguardando pagamento)',

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { money, errorText, localInputToIso, STATUS_LABEL } from '../src/shared/format.js';
+import { money, errorText, localInputToIso, STATUS_LABEL, date } from '../src/shared/format.js';
 import { createApi } from '../src/shell/api.js';
 
 test('money formata centavos em reais', () => {
@@ -31,4 +31,9 @@ test('cliente do BFF registra cada chamada e transforma erro HTTP em exceção c
   await assert.rejects(api.post('/appointments', {}), (e) => e.status === 409 && e.body.error.code === 'conflict');
   assert.equal(calls[0].url, 'https://gateway.exemplo/appointments');
   assert.equal(calls[0].correlationId, 'corr-1');
+});
+
+test('date não desloca datas sem hora por causa do fuso', () => {
+  assert.equal(date('2021-03-10'), '10/03/2021');
+  assert.equal(date(null), '-');
 });
